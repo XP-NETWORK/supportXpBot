@@ -21,9 +21,18 @@ export const txRouter = (): Router => {
           message: {
             message_id,
             text,
+            from,
             chat: { id },
           },
         } = body;
+
+        const user = await Coversation.findOne({
+          telegram: from.username
+        })
+
+        if (user) {
+          await Coversation.removeById(user.id);
+        }
 
         await axios({
           url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
@@ -64,7 +73,7 @@ export const txRouter = (): Router => {
                 stage: conversation.stage + 1,
                 [scenarios[conversation.type][conversation.stage].field]:
                   message.text,
-              });
+              }, {useFindAndModify: false});
 
           const type = conversation?.type;
           const stage = callback_query
