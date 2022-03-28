@@ -28,7 +28,6 @@ var os = require("os");
 
 
   app.listen(config.port || 3100, async () => {
-    console.log(os.hostname());
      const tryWebHook = await axios.post(`https://api.telegram.org/bot${config.bot}/setWebhook`, {
       "url": `https://support-bot-xp.herokuapp.com/update`,
       "drop_pending_updates": true

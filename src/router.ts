@@ -3,17 +3,16 @@ import { Request, Response, Router } from "express";
 import Coversation, {
 } from "./Conversation";
 import config from "./config";
-
-import {scenarios} from './constants/dialog'
+import {scenarios ,defaultPhrases} from './constants/dialog'
 import {BotUpdate}  from './types'
 
-
+import { validate, updateConversation } from "./helpers";
 
 export const txRouter = (): Router => {
   const router = Router();
 
   router.post("/update", async (req: Request, res: Response) => {
-    console.log(req.body, "body");
+    console.log('new');
     const body: BotUpdate = req.body;
     try {
       if (body.message?.text === "/start startwithxpbot") {
@@ -26,13 +25,10 @@ export const txRouter = (): Router => {
           },
         } = body;
 
-        const user = await Coversation.findOne({
-          telegram: from.username
-        })
-
-        if (user) {
-          await Coversation.findByIdAndDelete(user.id);
-        }
+          await Coversation.deleteMany({
+            telegram: from.username
+          })
+        
 
         await axios({
           url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
@@ -46,7 +42,7 @@ export const txRouter = (): Router => {
                 ],
               ],
             }),
-            text: "Who are you?",
+            text: "Identity yourself",
             chat_id: id,
           },
         });
@@ -63,24 +59,31 @@ export const txRouter = (): Router => {
               telegram: message.from.username,
             });
 
+
+
         if (
-          conversation &&
-          conversation.stage < scenarios[conversation.type].length
+          conversation && (conversation.stage < scenarios[conversation.type].length - 1)
+          
         ) {
-          conversation = callback_query
+
+          const isValid = await validate(conversation, callback_query, message);
+          console.log(isValid);
+          if (!isValid) return res.end()
+
+
+          conversation = callback_query 
             ? conversation
-            : await Coversation.findByIdAndUpdate(conversation.id, {
-                stage: conversation.stage + 1,
-                [scenarios[conversation.type][conversation.stage].field]:
-                  message.text,
-              }, {useFindAndModify: false});
+            : await updateConversation(conversation, message);
+
+
 
           const type = conversation?.type;
           const stage = callback_query
             ? conversation!.stage
-            : conversation!.stage + 1;
+            : conversation!.stage
 
-          if (type) {
+
+          if (type && scenarios[type][stage]?.text) {
             await axios({
               url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
               method: "post",
@@ -92,6 +95,37 @@ export const txRouter = (): Router => {
               },
             });
           }
+        }  else {
+          console.log('sending');
+         
+          if (conversation) {
+            
+          const isValid = await validate(conversation, callback_query, message);
+          console.log(isValid);
+          if (!isValid) return res.end()
+      
+          conversation  = await updateConversation(conversation, message)
+
+          conversation && await axios({
+            url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
+            method: "post",
+            data: {
+              text: defaultPhrases[conversation.type].final,
+              chat_id: callback_query
+                ? callback_query.message.chat.id
+                : message.chat.id,
+            },
+          });
+   
+          await axios({url: 'https://xpnetwork-staging.herokuapp.com/plantele', method: 'post', data: {
+            ProjectName: conversation?.ProjectName,
+            ProjectWebsite: conversation?.ProjectWebsite,
+            ContactName: conversation?.ContactName,
+            ContactAddress: `@${conversation?.telegram}/${conversation?.email}`, 
+            Message: conversation?.walletAddress? `Wallet address - ${conversation.walletAddress}`: ''
+          }})
+
+        }
         }
       }
 
@@ -99,7 +133,7 @@ export const txRouter = (): Router => {
 
     } catch (e: any) {
       console.log(e);
-      res.status(500).json({ message: e.toString() });
+      res.end();
     }
   });
 
