@@ -5,6 +5,7 @@ export  interface BotUpdate {
         username: string;
       };
       message: {
+        message_id: number,
         chat: {
           id: number;
         };

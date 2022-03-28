@@ -21,6 +21,10 @@ export const scenarios = {
           return re.test(text);
         }
       },
+      {
+        text: "Please tell us about the problem/issue you encountered with our bridge.",
+        field: "IssueDescr",
+      }
     ],
   
     project: [

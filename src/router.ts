@@ -1,10 +1,9 @@
 import axios from "axios";
 import { Request, Response, Router } from "express";
-import Coversation, {
-} from "./Conversation";
+import Coversation from "./Conversation";
 import config from "./config";
-import {scenarios ,defaultPhrases} from './constants/dialog'
-import {BotUpdate}  from './types'
+import { scenarios, defaultPhrases } from "./constants/dialog";
+import { BotUpdate } from "./types";
 
 import { validate, updateConversation } from "./helpers";
 
@@ -12,7 +11,7 @@ export const txRouter = (): Router => {
   const router = Router();
 
   router.post("/update", async (req: Request, res: Response) => {
-    console.log('new');
+    console.log("new");
     const body: BotUpdate = req.body;
     try {
       if (body.message?.text === "/start startwithxpbot") {
@@ -25,10 +24,9 @@ export const txRouter = (): Router => {
           },
         } = body;
 
-          await Coversation.deleteMany({
-            telegram: from.username
-          })
-        
+        await Coversation.deleteMany({
+          telegram: from.username,
+        });
 
         await axios({
           url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
@@ -49,6 +47,21 @@ export const txRouter = (): Router => {
       } else {
         const { message, callback_query } = body;
 
+        if (callback_query) {
+          console.log(callback_query);
+          await axios({
+            url: `https://api.telegram.org/bot${config.bot}/editMessageReplyMarkup`,
+            method: "post",
+            data: {
+              reply_markup: JSON.stringify({
+                inline_keyboard: [[]],
+              }),
+              message_id: callback_query.message.message_id,
+              chat_id: callback_query.message.chat.id,
+            },
+          });
+        }
+
         let conversation = callback_query
           ? await Coversation.createNew({
               type: callback_query.data,
@@ -59,29 +72,22 @@ export const txRouter = (): Router => {
               telegram: message.from.username,
             });
 
-
-
         if (
-          conversation && (conversation.stage < scenarios[conversation.type].length - 1)
-          
+          conversation &&
+          conversation.stage < scenarios[conversation.type].length - 1
         ) {
-
           const isValid = await validate(conversation, callback_query, message);
           console.log(isValid);
-          if (!isValid) return res.end()
+          if (!isValid) return res.end();
 
-
-          conversation = callback_query 
+          conversation = callback_query
             ? conversation
             : await updateConversation(conversation, message);
-
-
 
           const type = conversation?.type;
           const stage = callback_query
             ? conversation!.stage
-            : conversation!.stage
-
+            : conversation!.stage;
 
           if (type && scenarios[type][stage]?.text) {
             await axios({
@@ -95,48 +101,55 @@ export const txRouter = (): Router => {
               },
             });
           }
-        }  else {
-          console.log('sending');
-         
+        } else {
+          console.log("sending");
+
           if (conversation) {
-            
-          const isValid = await validate(conversation, callback_query, message);
-          console.log(isValid);
-          if (!isValid) return res.end()
-      
-          conversation  = await updateConversation(conversation, message)
+            const isValid = await validate(
+              conversation,
+              callback_query,
+              message
+            );
+            console.log(isValid);
+            if (!isValid) return res.end();
 
-          conversation && await axios({
-            url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
-            method: "post",
-            data: {
-              text: defaultPhrases[conversation.type].final,
-              chat_id: callback_query
-                ? callback_query.message.chat.id
-                : message.chat.id,
-            },
-          });
-   
-          await axios({url: 'https://xpnetwork-staging.herokuapp.com/plantele', method: 'post', data: {
-            ProjectName: conversation?.ProjectName,
-            ProjectWebsite: conversation?.ProjectWebsite,
-            ContactName: conversation?.ContactName,
-            ContactAddress: `@${conversation?.telegram}/${conversation?.email}`, 
-            Message: conversation?.walletAddress? `Wallet address - ${conversation.walletAddress}`: ''
-          }})
+            conversation = await updateConversation(conversation, message);
 
-        }
+            conversation &&
+              (await axios({
+                url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
+                method: "post",
+                data: {
+                  text: defaultPhrases[conversation.type].final,
+                  chat_id: callback_query
+                    ? callback_query.message.chat.id
+                    : message.chat.id,
+                },
+              }));
+
+            await axios({
+              url: "https://xpnetwork-staging.herokuapp.com/plantele",
+              method: "post",
+              data: {
+                ProjectName: conversation?.ProjectName,
+                ProjectWebsite: conversation?.ProjectWebsite,
+                ContactName: conversation?.ContactName,
+                ContactAddress: `@${conversation?.telegram}/${conversation?.email}`,
+                Message: conversation?.walletAddress
+                  ? `Wallet address - ${conversation.walletAddress}`
+                  : "",
+              },
+            });
+          }
         }
       }
 
       res.end();
-
     } catch (e: any) {
       console.log(e);
       res.end();
     }
   });
-
 
   return router;
 };

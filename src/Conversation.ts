@@ -10,6 +10,7 @@ interface IConversation {
   ProjectWebsite? :string;
   email?: string;
   ContactName?: string;
+  IssueDescr?: string;
   telegram:string;
   stage: number
 }
@@ -34,6 +35,7 @@ export const doc = {
   walletAddress: { type: Schema.Types.String },
   ContactName: { type: Schema.Types.String },
   email: { type: Schema.Types.String },
+  IssueDescr: { type: Schema.Types.String },
   telegram: { type: Schema.Types.String, required: true },
   stage: {type: Schema.Types.Number, required: true, default: 0}
 };
