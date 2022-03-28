@@ -2,6 +2,7 @@ import { Document, model, Model, Schema } from "mongoose";
 import { ObjectId } from "mongodb";
 import { CustomDocumentBuild } from "./documentDefaults";
 
+
 interface IConversation {
   type: 'user' | 'project';
   projectName?: string;
