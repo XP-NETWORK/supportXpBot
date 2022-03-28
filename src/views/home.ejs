@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/public/favicon.png" />
+    <link rel="stylesheet" href="/public/styles.css">
+    <title>Token Owner</title>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="modal">
+     
+    </div>
+ 
+    <div class="laoderWrapper transfer-loader__animation">
+        <%- include('loader.ejs') %>
+    </div>
+    <p class="title">Waiting for Sign</p>
+    <script>
+       window.messageToSign = '<%- message %>'; 
+       window.secret = '<%- secret %>';
+      </script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+
+<script src="/public/script.js">
+
+</script>
+</body>
+
+</html>
