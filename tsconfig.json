@@ -1,0 +1,27 @@
+{
+  "version": "2.4.2",
+  "compilerOptions": {
+    "lib": ["es5", "es6", "dom", "es2018"],
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "rootDir": "src",
+    "outDir": "lib",
+    "strict": true,
+    "allowJs": true,
+    "declaration": false,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false,
+    "types": ["node"]
+  },
+  "include": ["src/*.ts", "src/constants/abi.ts"],
+  "exclude": ["lib", "node_modules"]
+}
