@@ -31,7 +31,7 @@ export const txRouter = (): Router => {
         })
 
         if (user) {
-          await Coversation.removeById(user.id);
+          await Coversation.findByIdAndDelete(user.id);
         }
 
         await axios({
