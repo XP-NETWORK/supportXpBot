@@ -35,7 +35,7 @@ var os = require("os");
      })
 
      if (tryWebHook.data.ok) {
-       console.log('webhook active on ');
+       console.log('webhook active on ', os.hostname());
        app.use("/", txRouter());
      }
   });

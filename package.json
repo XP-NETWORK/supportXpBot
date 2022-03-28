@@ -5,7 +5,8 @@
   "author": "AlexeyA",
   "license": "MIT",
   "scripts": {
-    "start": "tsc && node ./lib/index.js",
+    "start": "node build/index.js",
+    "dev": "nodemon src/index.ts",
     "build": "tsc"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
+    "express": "^4.17.3",
     "mongoose": "^5.12.6",
     "typescript": "^4.2.4",
     "uuid": "^8.3.2"
