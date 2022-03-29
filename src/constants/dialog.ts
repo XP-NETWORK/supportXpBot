@@ -53,12 +53,34 @@ export const scenarios = {
     ],
   };
 
-export const defaultPhrases = {
+export const defaults = {
     user: {
-        final: 'Thanks! we will contact you soon.'
+        final: 'Thanks! we will contact you soon.',
+        url: '/supportele',
+        keys: [{
+          localKey: 'walletAddress',
+          backendKey: 'WalletAddress'
+        },{
+          localKey: 'ContactName',
+          backendKey: 'Name'
+        },{
+          localKey: 'IssueDescr',
+          backendKey: 'Message'
+        },/*'Wallet Address', 'Name', 'ContactAddress', 'Message'*/]
     },
 
     project: {
-        final: `Thanks! For further details you can contact our CBO, @DimauXP`
+        final: `Thanks! For further details you can contact our CBO, @DimauXP`,
+        url: '/plantele',
+        keys: [{
+          localKey: 'ProjectName',
+          backendKey: 'ProjectName'
+        }, {
+          localKey: 'ProjectWebsite',
+          backendKey: 'ProjectWebsite'
+        }, {
+          localKey: 'ContactName',
+          backendKey: 'ContactName'
+        }]
     }
 }

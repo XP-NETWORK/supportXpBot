@@ -13,7 +13,7 @@ function getOrThrow(key: string): string {
 export default  {
     port: getOrThrow('PORT'),
     bot: getOrThrow('BOT_TOKEN'),
-    mongo: getOrThrow('MONGO_URI')
-  
+    mongo: getOrThrow('MONGO_URI'),
+    backend: getOrThrow('BACKEND_URL')
 }
 

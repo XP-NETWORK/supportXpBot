@@ -2,7 +2,7 @@ import axios from "axios";
 import { Request, Response, Router } from "express";
 import Coversation from "./Conversation";
 import config from "./config";
-import { scenarios, defaultPhrases } from "./constants/dialog";
+import { scenarios, defaults } from "./constants/dialog";
 import { BotUpdate } from "./types";
 
 import { validate, updateConversation } from "./helpers";
@@ -115,31 +115,32 @@ export const txRouter = (): Router => {
 
             conversation = await updateConversation(conversation, message);
 
-            conversation &&
-              (await axios({
+            if (conversation) {
+              await axios({
                 url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
                 method: "post",
                 data: {
-                  text: defaultPhrases[conversation.type].final,
+                  text: defaults[conversation.type].final,
                   chat_id: callback_query
                     ? callback_query.message.chat.id
                     : message.chat.id,
                 },
-              }));
+              });
 
-            await axios({
-              url: "https://xpnetwork-staging.herokuapp.com/plantele",
-              method: "post",
-              data: {
-                ProjectName: conversation?.ProjectName,
-                ProjectWebsite: conversation?.ProjectWebsite,
-                ContactName: conversation?.ContactName,
-                ContactAddress: `@${conversation?.telegram}/${conversation?.email}`,
-                Message: conversation?.walletAddress
-                  ? `Wallet address - ${conversation.walletAddress}`
-                  : "",
-              },
-            });
+              await axios({
+                url: `${config.backend}${defaults[conversation.type].url}`,
+                method: "post",
+                data: {
+                  ...defaults[conversation.type].keys.reduce((acc, cur) => {
+                    return {
+                      ...acc,
+                      [cur.backendKey]: conversation![cur.localKey],
+                    };
+                  }, {}),
+                  ContactAddress: `@${conversation?.telegram}/${conversation?.email}`,
+                },
+              });
+            }
           }
         }
       }
