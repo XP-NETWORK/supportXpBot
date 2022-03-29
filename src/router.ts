@@ -48,7 +48,6 @@ export const txRouter = (): Router => {
         const { message, callback_query } = body;
 
         if (callback_query) {
-          console.log(callback_query);
           await axios({
             url: `https://api.telegram.org/bot${config.bot}/editMessageReplyMarkup`,
             method: "post",
@@ -77,7 +76,7 @@ export const txRouter = (): Router => {
           conversation.stage < scenarios[conversation.type].length - 1
         ) {
           const isValid = await validate(conversation, callback_query, message);
-          console.log(isValid);
+
           if (!isValid) return res.end();
 
           conversation = callback_query
@@ -128,10 +127,10 @@ export const txRouter = (): Router => {
               });
 
               await axios({
-                url: `${config.backend}${defaults[conversation.type].url}`,
+                url: `${config.backend}${defaults[conversation!.type].url}`,
                 method: "post",
                 data: {
-                  ...defaults[conversation.type].keys.reduce((acc, cur) => {
+                  ...defaults[conversation!.type].keys.reduce((acc, cur) => {
                     return {
                       ...acc,
                       [cur.backendKey]: conversation![cur.localKey],
@@ -148,7 +147,7 @@ export const txRouter = (): Router => {
       res.end();
     } catch (e: any) {
       console.log(e);
-      res.end();
+      res.status(200).json({})
     }
   });
 
