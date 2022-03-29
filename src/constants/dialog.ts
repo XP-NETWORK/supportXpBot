@@ -33,7 +33,7 @@ export const scenarios = {
       field: "ProjectName",
     },
     {
-      text: "Please write your website",
+      text: "Please write your website (Have to start from https or www)",
       field: "ProjectWebsite",
       validError: "Website link is not valid",
       isValid: (text: string) => {
