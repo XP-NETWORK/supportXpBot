@@ -16,7 +16,7 @@ export const txRouter = (): Router => {
 
     const body: BotUpdate = req.body;
 
-    if (String(body?.message.chat.id) === config.chat) return res.status(200).json({})
+    if (body.message?.chat?.id && String(body.message?.chat?.id) === config.chat) return res.status(200).json({})
 
     /*if (body?.message?.new_chat_member) {
 
