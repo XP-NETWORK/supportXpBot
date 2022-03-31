@@ -33,9 +33,9 @@ export const scenarios = {
       field: "ProjectName",
     },
     {
-      text: "Please write your website (Should start with https:// or www)",
+      text: "Please write your website",
       field: "ProjectWebsite",
-      validError: "Website link is not valid",
+      validError: "Website link is not valid (Should begin with https or www)",
       isValid: (text: string) => {
         var re =
           /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/gi;
