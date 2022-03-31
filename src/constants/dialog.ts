@@ -78,8 +78,17 @@ export const defaults = {
       {
         localKey: "IssueDescr",
         backendKey: "Message",
-      } /*'Wallet Address', 'Name', 'ContactAddress', 'Message'*/,
-    ],
+      },
+      {
+        localKey: "email",
+        backendKey: "Email",
+      },
+      {
+        localKey: "telegram",
+        backendKey: "ContactAddress",
+      },
+
+    ]
   },
 
   project: {
@@ -102,6 +111,14 @@ export const defaults = {
         localKey: "IssueDescr",
         backendKey: "Message",
       },
+      {
+        localKey: "email",
+        backendKey: "Email",
+      },
+      {
+        localKey: "telegram",
+        backendKey: "ContactAddress",
+      }
     ],
   },
 };

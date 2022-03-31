@@ -63,13 +63,13 @@ export const txRouter = (): Router => {
 
         let conversation = callback_query
           ? await Coversation.createNew({
-              type: callback_query.data,
-              telegram: callback_query.from.username,
-              stage: 0,
-            })
+            type: callback_query.data,
+            telegram: callback_query.from.username,
+            stage: 0,
+          })
           : await Coversation.findOne({
-              telegram: message.from.username,
-            });
+            telegram: message.from.username,
+          });
 
         if (
           conversation &&
@@ -129,15 +129,12 @@ export const txRouter = (): Router => {
               await axios({
                 url: `${config.backend}${defaults[conversation!.type].url}`,
                 method: "post",
-                data: {
-                  ...defaults[conversation!.type].keys.reduce((acc, cur) => {
-                    return {
-                      ...acc,
-                      [cur.backendKey]: conversation![cur.localKey],
-                    };
-                  }, {}),
-                  ContactAddress: `@${conversation?.telegram}/${conversation?.email}`,
-                },
+                data: defaults[conversation!.type].keys.reduce((acc, cur) => {
+                  return {
+                    ...acc,
+                    [cur.backendKey]: conversation![cur.localKey],
+                  };
+                }, {}),
               });
             }
           }
