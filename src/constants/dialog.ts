@@ -13,6 +13,10 @@ export const liftPremissions = {
 export const scenarios = {
   user: [
     {
+      text: "Please tell us about the problem/issue you encountered with our bridge.",
+      field: "IssueDescr",
+    },
+    {
       text: "Please write your Wallet Address",
       field: "walletAddress",
       validError: "Wallet address is not valid",
@@ -33,10 +37,7 @@ export const scenarios = {
         return re.test(text);
       },
     },
-    {
-      text: "Please tell us about the problem/issue you encountered with our bridge.",
-      field: "IssueDescr",
-    },
+    
   ],
 
   project: [

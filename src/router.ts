@@ -76,7 +76,9 @@ export const txRouter = (): Router => {
             method: "post",
             data: {
               reply_markup: JSON.stringify({
-                inline_keyboard: [[]],
+                inline_keyboard: [[
+                  { text: "Restart", url: "https://t.me/XP_NETWORK_Bridge_Support_Bot?start=startwithxpbot" },
+                ]],
               }),
               message_id: callback_query.message.message_id,
               chat_id: callback_query.message.chat.id,

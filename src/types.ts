@@ -1,6 +1,6 @@
 export  interface BotUpdate {
     callback_query: {
-      data: "user" | "project";
+      data: "user" | "project" | "restart";
       from: {
         username: string;
       };
