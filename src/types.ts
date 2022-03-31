@@ -11,9 +11,26 @@ export  interface BotUpdate {
         };
       };
     };
+    my_chat_member?:{
+      old_chat_member?: {
+        status?: string
+      }
+    },
     message: {
       text?: string;
       message_id?: number;
+      left_chat_member: {
+        id: number;
+        username: string,
+      },
+      new_chat_member?: {
+        id: number;
+        is_bot: false,
+        first_name: string,
+        last_name: string,
+        username: string,
+        language_code: string
+      },
       chat: {
         id: number;
       };

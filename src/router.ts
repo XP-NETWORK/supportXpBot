@@ -2,7 +2,7 @@ import axios from "axios";
 import { Request, Response, Router } from "express";
 import Coversation from "./Conversation";
 import config from "./config";
-import { scenarios, defaults } from "./constants/dialog";
+import { scenarios, defaults, liftPremissions } from "./constants/dialog";
 import { BotUpdate } from "./types";
 
 import { validate, updateConversation } from "./helpers";
@@ -11,8 +11,31 @@ export const txRouter = (): Router => {
   const router = Router();
 
   router.post("/update", async (req: Request, res: Response) => {
+
     console.log("new");
+
     const body: BotUpdate = req.body;
+
+    if (String(body?.message.chat.id) === config.chat) return res.status(200).json({})
+
+    /*if (body?.message?.new_chat_member) {
+
+    
+
+     /*await axios({
+        url: `https://api.telegram.org/bot${config.bot}/restrictChatMember`,
+        method: "post",
+        data: {
+          user_id: body.message.new_chat_member.id,
+          chat_id: body.message.chat.id,
+          permissions: JSON.stringify(liftPremissions)
+        },
+      });
+
+      return res.status(200).json({})
+    }*/
+
+//https://t.me/test_bot7770
     try {
       if (body.message?.text === "/start startwithxpbot") {
         const {
@@ -101,9 +124,9 @@ export const txRouter = (): Router => {
             });
           }
         } else {
-          console.log("sending");
-
+          
           if (conversation) {
+            console.log("sending");
             const isValid = await validate(
               conversation,
               callback_query,
@@ -119,14 +142,23 @@ export const txRouter = (): Router => {
                 url: `https://api.telegram.org/bot${config.bot}/sendMessage`,
                 method: "post",
                 data: {
-                  text: defaults[conversation.type].final,
+                  text: `${defaults[conversation.type].final}\nJoin XP.NETWORK Technical Support Group`,
                   chat_id: callback_query
                     ? callback_query.message.chat.id
                     : message.chat.id,
+
+                    reply_markup: JSON.stringify({
+                      inline_keyboard: [
+                        [
+                          { text: "JOIN", url: 'https://t.me/XP_NETWORK_Technical_Support' },
+                        ],
+                      ],
+                    }),
                 },
               });
 
-              await axios({
+
+               await axios({
                 url: `${config.backend}${defaults[conversation!.type].url}`,
                 method: "post",
                 data: defaults[conversation!.type].keys.reduce((acc, cur) => {

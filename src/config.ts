@@ -14,6 +14,7 @@ export default  {
     port: getOrThrow('PORT'),
     bot: getOrThrow('BOT_TOKEN'),
     mongo: getOrThrow('MONGO_URI'),
-    backend: getOrThrow('BACKEND_URL')
+    backend: getOrThrow('BACKEND_URL'),
+    chat: getOrThrow('CHAT_ID')
 }
 
