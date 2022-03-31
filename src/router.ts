@@ -13,8 +13,9 @@ export const txRouter = (): Router => {
   router.post("/update", async (req: Request, res: Response) => {
 
     console.log("new");
-
+    
     const body: BotUpdate = req.body;
+
 
     if (body.message?.chat?.id && String(body.message?.chat?.id) === config.chat) return res.status(200).json({})
 
@@ -37,7 +38,7 @@ export const txRouter = (): Router => {
 
 //https://t.me/test_bot7770
     try {
-      if (body.message?.text === "/start startwithxpbot") {
+      if (body.message?.text === "/start startwithxpbot" || body.message?.text === '/start') {
         const {
           message: {
             message_id,
@@ -77,7 +78,7 @@ export const txRouter = (): Router => {
             data: {
               reply_markup: JSON.stringify({
                 inline_keyboard: [[
-                  { text: "Restart", url: "https://t.me/XP_NETWORK_Bridge_Support_Bot?start=startwithxpbot" },
+                  //{ text: "Restart", url: "https://t.me/XP_NETWORK_Bridge_Support_Bot?start=startwithxpbot" },
                 ]],
               }),
               message_id: callback_query.message.message_id,

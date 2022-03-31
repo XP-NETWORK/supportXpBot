@@ -13,6 +13,10 @@ export const liftPremissions = {
 export const scenarios = {
   user: [
     {
+      text: "Please write your contact name",
+      field: "ContactName",
+    },
+    {
       text: "Please tell us about the problem/issue you encountered with our bridge.",
       field: "IssueDescr",
     },
@@ -23,10 +27,6 @@ export const scenarios = {
       isValid: (text: string) => {
         return text.length > 15;
       },
-    },
-    {
-      text: "Please write your contact name",
-      field: "ContactName",
     },
     {
       text: "Please write your email",
