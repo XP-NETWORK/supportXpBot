@@ -12,12 +12,12 @@ export const txRouter = (): Router => {
 
   router.post("/update", async (req: Request, res: Response) => {
 
-    console.log("new");
-    
     const body: BotUpdate = req.body;
+    if (String(body?.message?.chat?.id) === '-1001564042174') return res.status(200).json({})
 
+    if (String(body?.message?.chat?.id) === config.chat) return res.status(200).json({})
 
-    if (body.message?.chat?.id && String(body.message?.chat?.id) === config.chat) return res.status(200).json({})
+    console.log("new");
 
     /*if (body?.message?.new_chat_member) {
 
@@ -36,7 +36,7 @@ export const txRouter = (): Router => {
       return res.status(200).json({})
     }*/
 
-//https://t.me/test_bot7770
+    //https://t.me/test_bot7770
     try {
       if (body.message?.text === "/start startwithxpbot" || body.message?.text === '/start') {
         const {
@@ -127,7 +127,7 @@ export const txRouter = (): Router => {
             });
           }
         } else {
-          
+
           if (conversation) {
             console.log("sending");
             const isValid = await validate(
@@ -150,18 +150,18 @@ export const txRouter = (): Router => {
                     ? callback_query.message.chat.id
                     : message.chat.id,
 
-                    reply_markup: JSON.stringify({
-                      inline_keyboard: [
-                        [
-                          { text: "JOIN", url: 'https://t.me/XP_NETWORK_Technical_Support' },
-                        ],
+                  reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                      [
+                        { text: "JOIN", url: 'https://t.me/XP_NETWORK_Technical_Support' },
                       ],
-                    }),
+                    ],
+                  }),
                 },
               });
 
 
-               await axios({
+              await axios({
                 url: `${config.backend}${defaults[conversation!.type].url}`,
                 method: "post",
                 data: defaults[conversation!.type].keys.reduce((acc, cur) => {
