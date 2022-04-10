@@ -1,11 +1,29 @@
 import axios from "axios";
 import { Request, Response, Router } from "express";
-import Coversation from "./Conversation";
+import Coversation,{IConversationDocument} from "./Conversation";
 import config from "./config";
 import { scenarios, defaults, liftPremissions } from "./constants/dialog";
 import { BotUpdate } from "./types";
 
 import { validate, updateConversation } from "./helpers";
+
+
+export const getTelegramTemplate = (conversation:IConversationDocument) => {
+  return `
+  <strong>NEW PROJECT - ${conversation.ProjectName}</strong>
+
+  ContactName: <strong>${conversation.ContactName}</strong>
+  
+  ProjectWebsite: <a href="${conversation.ProjectWebsite}">${conversation.ProjectWebsite}</a>
+  
+  Email: <strong>${conversation.email}</strong>
+  
+  Telegeram: <strong>@${conversation.telegram}</strong>
+  
+  Issue: ${conversation.IssueDescr}
+  `;
+};
+
 
 export const txRouter = (): Router => {
   const router = Router();
@@ -160,8 +178,12 @@ export const txRouter = (): Router => {
                 },
               });
 
+              conversation.type === 'project' &&  axios.get(
+                `https://api.telegram.org/bot${config.bot}/sendMessage?chat_id=${config.target}&text=${getTelegramTemplate(conversation)}&parse_mode=HTML`
+              );
 
-              await axios({
+
+              axios({
                 url: `${config.backend}${defaults[conversation!.type].url}`,
                 method: "post",
                 data: defaults[conversation!.type].keys.reduce((acc, cur) => {
@@ -171,6 +193,9 @@ export const txRouter = (): Router => {
                   };
                 }, {}),
               });
+
+
+              
             }
           }
         }
@@ -185,3 +210,5 @@ export const txRouter = (): Router => {
 
   return router;
 };
+
+
