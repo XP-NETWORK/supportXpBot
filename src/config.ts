@@ -16,6 +16,6 @@ export default  {
     mongo: getOrThrow('MONGO_URI'),
     backend: getOrThrow('BACKEND_URL'),
     chat: getOrThrow('CHAT_ID'),
-    target: getOrThrow('')
+    target: getOrThrow('TARGET_CHAT')
 }
 
